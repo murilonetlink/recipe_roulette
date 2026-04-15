@@ -1,0 +1,4 @@
+flet==0.21.2
+supabase
+python-dotenv==1.0.1
+bcrypt==4.1.2
