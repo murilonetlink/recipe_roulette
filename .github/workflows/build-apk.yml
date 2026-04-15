@@ -1,0 +1,39 @@
+name: Build Flet APK
+
+on:
+  push:
+    branches:
+      - main  # Ou 'master', dependendo do nome da sua branch principal
+  workflow_dispatch: # Permite que você clique em um botão para gerar manualmente
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install flet supabase python-dotenv bcrypt
+
+      - name: Create .env from Secrets
+        # O Flet vai empacotar o arquivo .env pro celular ler.
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+      - name: Build APK
+        # O argumento --include-packages empacota as libs necessárias
+        run: flet build apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: RecipeRoulette-APK
+          path: build/apk/**/*.apk
