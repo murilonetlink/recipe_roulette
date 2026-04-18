@@ -1,9 +1,9 @@
-import bcrypt
+import hashlib
 from core.supabase_client import supabase
 
 def hash_password(password: str) -> str:
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+    # A usar a biblioteca nativa do Python. Zero problemas no telemóvel!
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 def register_user(username: str, password: str):
     hashed = hash_password(password)
@@ -19,7 +19,7 @@ def login(username: str, password: str):
     if len(users) == 0:
         return None
     user = users[0]
-    password_hash = user['password_hash']
-    if bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8')):
+    # A verificação passa a ser uma comparação simples das hashes
+    if hash_password(password) == user['password_hash']:
         return user
     return None
