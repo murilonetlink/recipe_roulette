@@ -1,4 +1,2 @@
 flet
 supabase
-python-dotenv==1.0.1
-bcrypt>=4.2.0
