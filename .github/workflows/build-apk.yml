@@ -2,8 +2,7 @@ name: Build Flet APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -20,12 +19,13 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install flet supabase python-dotenv bcrypt
+        run: pip install flet supabase
 
-      - name: Create .env from Secrets
+      - name: Inject Secrets into Python
+        # Criamos um ficheiro normal em vez de um .env!
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
-          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+          echo 'SUPABASE_URL = "${{ secrets.SUPABASE_URL }}"' > core/env_vars.py
+          echo 'SUPABASE_KEY = "${{ secrets.SUPABASE_KEY }}"' >> core/env_vars.py
 
       - name: Build APK
         run: yes | flet build apk
