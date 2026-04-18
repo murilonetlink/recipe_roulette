@@ -1,12 +1,15 @@
 import flet as ft
-import traceback # Biblioteca para capturar o erro completo
+import traceback
 
 def main(page: ft.Page):
     # Configurações do layout mobile
     page.title = "Recipe Roulette"
-    page.window_width = 400
-    page.window_height = 800
-    page.window_resizable = False
+    
+    # REMOVIDO: page.window_width e page.window_height
+    # O Flet agora vai herdar 100% da tela do seu S25 Ultra dinamicamente.
+    
+    # Adicionado scroll adaptativo para evitar que o teclado esmague a tela
+    page.scroll = ft.ScrollMode.ADAPTIVE
     
     page.theme = ft.Theme(
         color_scheme_seed=ft.colors.GREEN_500,
@@ -14,9 +17,6 @@ def main(page: ft.Page):
     )
 
     try:
-        # Movemos as importações para DENTRO da função main.
-        # Assim, se o erro for na hora de ler o Banco de Dados, 
-        # a tela do app já vai estar pronta para mostrar o aviso!
         from ui.views.login_view import LoginView
         from ui.views.roleta_view import RoletaView
         from ui.views.add_view import AddRecipeView
@@ -50,8 +50,6 @@ def main(page: ft.Page):
         page.go("/")
 
     except Exception as e:
-        # Se der qualquer erro na inicialização, a tela cinza não aparece mais.
-        # Ele vai imprimir o log do erro de vermelho na tela do seu celular!
         page.scroll = ft.ScrollMode.AUTO
         page.add(
             ft.Text("Ocorreu um Erro Fatal:", color=ft.colors.RED_900, weight=ft.FontWeight.BOLD),
